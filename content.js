@@ -122,6 +122,9 @@
     .chip.song.on { background: rgba(0,255,163,.16); }
     .sel:disabled { opacity: .45; }
     .p-foot { display: flex; gap: 6px; margin-top: 12px; }
+    .p-support { display: block; margin-top: 8px; padding: 7px 0; border-radius: 6px; text-align: center; text-decoration: none;
+      background: rgba(255,255,255,.08); color: #ddd; font-size: 12px; }
+    .p-support:hover { background: rgba(255,255,255,.15); color: #fff; }
     .p-link { cursor: pointer; flex: 1; border-radius: 6px; padding: 6px 0; font-size: 12px; font-family: inherit;
       border: 0; background: rgba(255,255,255,.08); color: #ccc; }
     .p-link:hover { background: rgba(255,255,255,.15); color: #fff; }
@@ -512,7 +515,8 @@
       <div class="p-foot">
         <button class="p-link" data-act="show">${T('ui.showAgain')}</button>
         <button class="p-link" data-act="reset-pos">${T('ui.resetPos')}</button>
-      </div>`;
+      </div>
+      <a class="p-support" href="https://chzzk.naver.com/live/61fd47147848ac0035788e31fe000090/chat?studio=true" target="_blank" rel="noopener">${T('p.coffee')}</a>`;
 
     panel.querySelector('.p-close').onclick = closePanel;
     panel.querySelector('.p-stop').onclick = () => {
