@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "CHZZK Auto Translation"
+  },
+  "extShortName": {
+    "message": "CHZZK Subtitles"
+  },
+  "extDescription": {
+    "message": "Auto-detects the language spoken on CHZZK live streams and shows real-time subtitles in the languages you choose. Free, no API key."
+  },
+  "cmdToggle": {
+    "message": "Turn translated subtitles on/off"
+  }
+}

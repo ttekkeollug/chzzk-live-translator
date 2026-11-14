@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>CHZZK Auto Translation</title>
+<style>
+  :root { --bg:#111417; --card:#1b1f24; --line:#2a3038; --text:#e9eef3; --sub:#8b96a3; --accent:#00ffa3; --warn:#ffd479; --err:#ff8a8a; }
+  * { box-sizing: border-box; }
+  body { margin:0; width:340px; background:var(--bg); color:var(--text); font:13px/1.45 "Pretendard","Noto Sans KR",system-ui,sans-serif; }
+  header { padding:14px 16px 10px; display:flex; align-items:center; gap:8px; }
+  header h1 { font-size:15px; margin:0; flex:1; }
+  .lang-sel { flex:none !important; width:auto; padding:3px 6px; font-size:12px; }
+  .dot { width:9px; height:9px; border-radius:50%; background:#555; }
+  .dot.on { background:var(--accent); box-shadow:0 0 8px var(--accent); }
+  main { padding:0 16px 14px; display:flex; flex-direction:column; gap:10px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px 12px; display:flex; flex-direction:column; gap:8px; }
+  .card h2 { font-size:12px; color:var(--sub); margin:0; font-weight:600; }
+  label.row, div.row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  div.row .sub { text-align:right; }
+  select, input[type=text], input[type=password], input[type=number] {
+    background:#0d1013; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 7px; font:inherit; min-width:0;
+  }
+  select { flex:0 0 170px; }
+  input[type=password], input[type=text] { flex:1; }
+  .checks { display:flex; gap:14px; flex-wrap:wrap; }
+  .checks label { display:flex; align-items:center; gap:4px; }
+  .tgts { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .tgt { border:1px solid var(--line); background:transparent; color:var(--sub); border-radius:6px; padding:5px 0; font:inherit;
+    font-size:12px; cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tgt.on { border-color:var(--accent); color:var(--accent); background:rgba(0,255,163,.08); }
+  .tgt .ord { font-size:10px; margin-left:3px; opacity:.8; }
+  .sub { color:var(--sub); font-size:11px; font-weight:400; }
+  .song-btn { border:1px solid var(--line); background:transparent; color:var(--text); border-radius:8px; padding:9px;
+    font:inherit; font-size:13px; font-weight:700; cursor:pointer; }
+  .gate { padding:8px 10px; border-radius:8px; background:rgba(255,212,121,.08); border:1px solid rgba(255,212,121,.35); color:var(--warn); font-size:12px; line-height:1.4; }
+  .gate .g-list { display:flex; flex-wrap:wrap; gap:4px 6px; margin:6px 0 2px; }
+  .gate a { color:var(--accent); text-decoration:none; padding:2px 6px; border-radius:5px; background:rgba(0,255,163,.08); }
+  .song-btn.on { border-color:var(--accent); color:var(--accent); background:rgba(0,255,163,.12); }
+  select:disabled { opacity:.45; }
+  input[type=range] { accent-color:var(--accent); }
+  #main-btn { border:0; border-radius:10px; padding:11px; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; background:var(--accent); color:#04130c; }
+  #main-btn.stop { background:#ff5c5c; color:#fff; }
+  #main-btn:disabled { opacity:.5; cursor:default; }
+  #status { color:var(--sub); min-height:18px; font-size:12px; word-break:keep-all; }
+  #status.warn { color:var(--warn); } #status.error { color:var(--err); }
+  .hint { color:var(--sub); font-size:11px; }
+  .hint a { color:var(--accent); }
+  details summary { cursor:pointer; color:var(--sub); font-size:12px; }
+  .hidden { display:none !important; }
+  .coffee-btn { width:100%; border:1px solid var(--line); background:transparent; color:var(--text); border-radius:10px;
+    padding:9px; font-family:inherit; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;
+    box-sizing:border-box; text-decoration:none; }
+  .coffee-btn:hover { border-color:#c89b6d; color:#f3d3b0; }
+</style>
+</head>
+<body>
+<header><span class="dot" id="dot"></span><h1 data-i18n="app.name"></h1>
+  <select id="uiLang" class="lang-sel" aria-label="Language">
+    <option value="auto" data-i18n="lang.autoShort"></option>
+    <option value="ko">한국어</option>
+    <option value="ja">日本語</option>
+    <option value="en">English</option>
+  </select>
+</header>
+<main>
+  <button id="main-btn"></button>
+  <div id="status"></div>
+
+  <section class="card">
+    <h2 data-i18n="p.langs"></h2>
+    <button type="button" class="song-btn" id="song"></button>
+    <div class="hint" id="song-sub"></div>
+    <div class="gate hidden" id="gate"></div>
+    <div id="song-src-block" class="hidden">
+      <div class="row"><span data-i18n="ui.songSrc"></span></div>
+      <div class="tgts" id="song-src" style="grid-template-columns:repeat(4,1fr);margin-top:6px"></div>
+    </div>
+    <div class="row"><span data-i18n="ui.tgtLang"></span><span class="sub" id="tgt-max"></span></div>
+    <div class="tgts" id="tgts"></div>
+    <div class="checks"><label><input type="checkbox" id="showOrig"> <span data-i18n="ui.showOrig"></span></label></div>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="p.display"></h2>
+    <label class="row"><span data-i18n="p.fontSize"></span> <input type="number" id="fontSize" min="12" max="48" style="width:70px"></label>
+    <label class="row"><span data-i18n="p.maxLines"></span> <input type="number" id="maxLines" min="1" max="6" style="width:70px"></label>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="p.recog"></h2>
+    <label class="row"><span data-i18n="p.engine"></span>
+      <select id="engine">
+        <option value="auto" data-i18n="p.eng.auto"></option>
+        <option value="webspeech" data-i18n="p.eng.webspeech"></option>
+        <option value="local" data-i18n="p.eng.local"></option>
+        <option value="api" data-i18n="p.eng.api"></option>
+      </select>
+    </label>
+    <div class="hint" id="engine-hint"></div>
+  </section>
+
+  <section class="card hidden" id="api-block">
+    <h2 data-i18n="p.apiTitle"></h2>
+    <label class="row"><span data-i18n="p.provider"></span>
+      <select id="provider">
+        <option value="groq" data-i18n="p.prov.groq"></option>
+        <option value="openai">OpenAI</option>
+      </select>
+    </label>
+    <label class="row"><span data-i18n="p.apiKey"></span> <input type="password" id="apiKey" placeholder="gsk_… / sk-…" autocomplete="off"></label>
+    <div class="hint" id="key-hint"></div>
+  </section>
+
+  <section class="card">
+    <h2 data-i18n="p.trans"></h2>
+    <label class="row"><span data-i18n="p.method"></span>
+      <select id="translator">
+        <option value="auto" data-i18n="p.tr.auto"></option>
+        <option value="local" data-i18n="p.tr.local"></option>
+        <option value="google" data-i18n="p.tr.google"></option>
+        <option value="llm" data-i18n="p.tr.llm"></option>
+      </select>
+    </label>
+  </section>
+
+  <details>
+    <summary data-i18n="p.advanced"></summary>
+    <section class="card" style="margin-top:8px">
+      <label class="row"><span data-i18n="p.sttModel"></span> <input type="text" id="sttModel"></label>
+      <label class="row"><span data-i18n="p.llmModel"></span> <input type="text" id="llmModel"></label>
+      <label class="row"><span data-i18n="p.pauseMs"></span> <input type="number" id="pauseMs" min="300" max="2000" step="50" style="width:80px"></label>
+      <label class="row"><span data-i18n="p.maxSeg"></span> <input type="number" id="maxSegSec" min="3" max="20" style="width:80px"></label>
+      <label class="row"><span data-i18n="p.showApi"></span><input type="checkbox" id="showApi"></label>
+      <button id="reset-models" style="background:none;border:1px solid var(--line);color:var(--sub);border-radius:6px;padding:5px;cursor:pointer" data-i18n="p.resetModels"></button>
+    </section>
+  </details>
+
+  <a class="coffee-btn" id="coffee-btn" href="https://chzzk.naver.com/live/61fd47147848ac0035788e31fe000090/chat?studio=true" target="_blank" rel="noopener" data-i18n="p.coffee"></a>
+</main>
+<script src="i18n.js"></script>
+<script src="langs.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

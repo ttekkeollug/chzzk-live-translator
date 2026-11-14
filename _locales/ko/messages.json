@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "CHZZK Auto Translation"
+  },
+  "extShortName": {
+    "message": "치지직 번역자막"
+  },
+  "extDescription": {
+    "message": "치지직 라이브에서 말하는 언어를 자동으로 알아듣고, 원하는 언어의 자막으로 실시간 번역해 보여 줍니다. API 키 없이 무료로 동작합니다."
+  },
+  "cmdToggle": {
+    "message": "번역 자막 켜기/끄기"
+  }
+}

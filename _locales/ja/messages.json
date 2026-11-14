@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "CHZZK Auto Translation"
+  },
+  "extShortName": {
+    "message": "CHZZK翻訳字幕"
+  },
+  "extDescription": {
+    "message": "CHZZK配信で話されている言語を自動で聞き分け、選んだ言語の字幕にリアルタイムで翻訳して表示します。APIキー不要・無料。"
+  },
+  "cmdToggle": {
+    "message": "翻訳字幕のオン/オフ"
+  }
+}
